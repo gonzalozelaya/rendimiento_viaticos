@@ -125,6 +125,7 @@ class RendimientoWizard(models.TransientModel):
     notes = fields.Text('Observaciones')
 
     account_id = fields.Many2one('account.account',related='expense_id.account_id',string='Cuenta contable')
+    analytic_distribution = fields.Json(string='Distribución analitica',related='expense_id.analytic_distribution')
     expense_line_ids = fields.Many2many(
         'hr.expense',
         string='Líneas de gasto'
@@ -192,6 +193,7 @@ class RendimientoWizard(models.TransientModel):
             'credit': self.amount_returned,
             'debit': 0,
             'name': _("Devolución de viático %s") % self.sheet_id.name,
+            'analytic_distribution': self.analytic_distribution or False,
             #'partner_id': partner.id,
         }))
         
