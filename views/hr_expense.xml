@@ -1,0 +1,83 @@
+<odoo>
+    <record id="view_hr_expense_sheet_form_inherit" model="ir.ui.view">
+        <field name="name">hr.expense.sheet.form.inherit</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+        <field name="arch" type="xml">
+            <!-- Agregamos el botón dentro del header -->
+            <xpath expr="//form/header" position="inside" >
+                <field name="all_expenses_returned" invisible="1"/>
+                <button name="action_open_rendimiento_wizard" type="object" string="Registrar Rendimiento" class="btn-primary" invisible="state != 'done' or all_expenses_returned"/>
+            </xpath>
+            <xpath expr="//form/sheet/div[@class='oe_button_box']" position="inside">
+                <button name="action_open_rendimientos" class="oe_stat_button" icon="fa-money" type="object" invisible="not rendimiento_count">
+                    <div class="o_stat_info">
+                        <field name="rendimiento_count" widget="integer" class="o_stat_value"/>
+                        <span class="o_stat_text">Rendimientos</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page/field[@name='expense_line_ids']/tree" position="inside">
+                <field name="amount_returned" string="Devuelto"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_expense_rendimiento_wizard_form" model="ir.ui.view">
+        <field name="name">hr.expense.rendimiento.wizard.form</field>
+        <field name="model">hr.expense.rendimiento.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Registrar Rendimiento de Viáticos">
+                <group>
+                    <group>
+                    <field name="expense_id"/>
+                    <field name="sheet_id" readonly="1" invisible="1"/>
+                    <field name="date"/>
+                    <field name="journal_id" readonly="1" invisible="1"/>
+                    <field name="payment_method_id" invisible="1"/>
+                    </group>
+                    <group>
+                        <field name="amount_paid" string="Monto Entregado"/>
+                        <field name="amount_returned" />
+                        <field name="notes" nolabel="0"/>
+                    </group>
+                </group>
+
+                <group>
+                    <field name="amount_used" />
+                    
+                    <field name="amount_remaining" readonly="1" invisible="1"/>
+                    <field name="expense_line_ids" widget="many2many_tags" invisible="1"/>
+                </group>
+
+                <!--<separator string="Detalles de gastos" />
+
+                <group>
+                    <field name="expense_line_ids" widget="many2many_tags"/>
+                    <field name="notes" nolabel="0"/>
+                </group>-->
+
+                <footer>
+                    <button name="action_register_rendimiento" type="object" string="Registrar Rendimiento"
+                        class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hr_expense_rendimiento_tree" model="ir.ui.view">
+        <field name="name">hr.expense.rendimiento.tree</field>
+        <field name="model">hr.expense.rendimiento</field>
+        <field name="arch" type="xml">
+            <tree string="Rendimientos de Viáticos">
+                <field name="date"/>
+                <field name="move_id" widget="many2one_button" options="{'no_open': False}" />
+                <field name="amount"/>
+                <field name="notes"/>
+            </tree>
+        </field>
+    </record>
+
+    
+</odoo>
