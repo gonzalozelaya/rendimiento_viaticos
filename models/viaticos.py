@@ -95,8 +95,10 @@ class HrExpenseSheet(models.Model):
     @api.depends('employee_id', 'employee_id.department_id')
     def _compute_from_employee_id(self):
         for sheet in self:
-            sheet.department_id = sheet.employee_id.department_id
-            sheet.user_id = self.env['res.users'].browse(30)
+            # Asigna False si no hay employee_id o si employee_id no tiene department_id
+            sheet.department_id = sheet.employee_id.department_id if sheet.employee_id and sheet.employee_id.department_id else False
+            # Asigna el usuario con ID 30 o False si no se encuentra
+            sheet.user_id = self.env['res.users'].browse(30) if self.env['res.users'].browse(30).exists() else False
 
 class HrExpenseRendimiento(models.Model):
     _name = 'hr.expense.rendimiento'
