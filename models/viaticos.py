@@ -100,6 +100,14 @@ class HrExpenseSheet(models.Model):
             # Asigna el usuario con ID 30 o False si no se encuentra
             sheet.user_id = self.env['res.users'].browse(30) if self.env['res.users'].browse(30).exists() else False
 
+    def _check_can_create_move(self):
+        if any(sheet.state != 'approve' for sheet in self):
+            raise UserError(_("You can only generate accounting entry for approved expense(s)."))
+
+        if any(not sheet.journal_id for sheet in self):
+            raise UserError(_("Please specify an expense journal in order to generate accounting entries."))
+
+
 class HrExpenseRendimiento(models.Model):
     _name = 'hr.expense.rendimiento'
     _description = 'Rendimiento de viáticos'
